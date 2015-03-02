@@ -7,10 +7,19 @@ MAX_API_TWEETS = 3200
 MAX_TWEETS_PER_PAGE = 250
 MAX_TWEETS_PER_REQUEST = 100
 
+# Get these from apps.twitter.com
+unless `ENV` =~ /TWITTER/
+  ENV["TWITTER_CONSUMER_KEY"] = ""
+  ENV["TWITTER_CONSUMER_SECRET"] = ""
+  ENV["TWITTER_ACCESS_TOKEN"] = ""
+  ENV["TWITTER_ACCESS_TOKEN_SECRET"] = ""
+end
+
 @options = Trollop::options do
   opt :force, "Actually delete/unfavourite/unretweet tweets"
   opt :user, "The Twitter username to purge", type: :string
   opt :csv, "Twitter archive tweets.csv file", type: :string
+  opt :unfav, "Unfavourite my favorite tweets"
   opt :days, "Keep tweets under this many days old", default: 28
   opt :rts, "Keep tweet with this many retweets", default: 5
   opt :favs, "Keep tweets with this many favourites", default: 5
@@ -66,21 +75,23 @@ rescue Twitter::Error::TooManyRequests => error
 end
 
 user = api_call :user, @options[:username]
-tweets_to_unfavourite = []
 tweets_to_delete = []
 
-puts "==> Checking favourites..."
-total_favorites = [user.favorites_count, MAX_API_TWEETS].min
-oldest_favorites_page = (total_favorites / MAX_TWEETS_PER_PAGE).to_i
+unless !@options[:unfav]
+  tweets_to_unfavourite = []
+  puts "==> Checking favourites..."
+  total_favorites = [user.favorites_count, MAX_API_TWEETS].min
+  oldest_favorites_page = (total_favorites / MAX_TWEETS_PER_PAGE).to_i
 
-oldest_favorites_page.downto(0) do |page|
-  tweets = api_call :favorites, count: MAX_TWEETS_PER_PAGE, page: page
-  tweets_to_unfavourite += tweets.reject &method(:too_new?)
-end
+  oldest_favorites_page.downto(0) do |page|
+    tweets = api_call :favorites, count: MAX_TWEETS_PER_PAGE, page: page
+    tweets_to_unfavourite += tweets.reject &method(:too_new?)
+  end
 
-puts "==> Unfavoriting #{tweets_to_unfavourite.size} tweets"
-tweets_to_unfavourite.each_slice(MAX_TWEETS_PER_REQUEST) do |tweets|
-  api_call :unfavorite, tweets
+  puts "==> Unfavoriting #{tweets_to_unfavourite.size} tweets"
+  tweets_to_unfavourite.each_slice(MAX_TWEETS_PER_REQUEST) do |tweets|
+    api_call :unfavorite, tweets
+  end
 end
 
 puts "Checking timeline..."
