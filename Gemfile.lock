@@ -2,8 +2,8 @@ GEM
   remote: https://rubygems.org/
   specs:
     addressable (2.3.7)
-    awesome_print (1.6.1)
     buftok (0.2.0)
+    dotenv (2.0.0)
     equalizer (0.0.9)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
@@ -34,6 +34,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  awesome_print
+  dotenv
   trollop
   twitter

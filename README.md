@@ -7,17 +7,24 @@ TwitterDelete is a small application to delete your old, unpopular tweets.
 - Delete tweets no longer exposed by Twitter API from a downloaded Twitter archive file
 
 ## Usage
-To use locally run:
+To setup locally run:
 ```bash
 git clone https://github.com/mikemcquaid/TwitterDelete
 cd TwitterDelete
 bundle install
-# Get these from apps.twitter.com
-export TWITTER_CONSUMER_KEY=".."
-export TWITTER_CONSUMER_SECRET="..."
-export TWITTER_ACCESS_TOKEN="..."
-export TWITTER_ACCESS_TOKEN_SECRET="..."
-bundle exec ./twitter_delete.rb --user TwitterUsername
+```
+
+Get the Twitter API variables from https://apps.twitter.com and add the following variables to a `.env` file in the `TwitterDelete` folder:
+```bash
+TWITTER_CONSUMER_KEY=..
+TWITTER_CONSUMER_SECRET=...
+TWITTER_ACCESS_TOKEN=...
+TWITTER_ACCESS_TOKEN_SECRET=...
+```
+
+Now run TwitterDelete:
+```bash
+./twitter_delete.rb --user TwitterUsername
 ```
 
 ## Status

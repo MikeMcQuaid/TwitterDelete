@@ -1,2 +1,4 @@
 .ruby-version
 .bundle
+.env
+bin/

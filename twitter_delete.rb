@@ -1,7 +1,13 @@
 #!/usr/bin/env ruby
+require "pathname"
+ENV["BUNDLE_GEMFILE"] ||= File.expand_path "#{__FILE__}/../Gemfile"
+require "rubygems"
+require "bundler/setup"
+
 require "twitter"
 require "trollop"
 require "csv"
+require "dotenv"
 
 MAX_API_TWEETS = 3200
 MAX_TWEETS_PER_PAGE = 250
@@ -21,6 +27,7 @@ if @options[:csv_given] && !File.exist?(@options[:csv])
   Trollop::die :csv, "must be a file that exists"
 end
 
+Dotenv.load
 [ "TWITTER_CONSUMER_KEY", "TWITTER_CONSUMER_SECRET",
   "TWITTER_ACCESS_TOKEN", "TWITTER_ACCESS_TOKEN_SECRET"].each do |env|
   Trollop::die "#{env} environment variable must be set" unless ENV[env]
