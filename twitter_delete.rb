@@ -75,7 +75,7 @@ oldest_favorites_page = (total_favorites / MAX_TWEETS_PER_PAGE).to_i
 
 oldest_favorites_page.downto(0) do |page|
   tweets = api_call :favorites, count: MAX_TWEETS_PER_PAGE, page: page
-  tweets_to_unfavourite += tweets.reject &method(:too_new?)
+  tweets_to_unfavourite += tweets.reject(&method(:too_new?))
 end
 
 puts "==> Unfavoriting #{tweets_to_unfavourite.size} tweets"
@@ -89,7 +89,7 @@ oldest_tweets_page = (total_tweets / MAX_TWEETS_PER_PAGE).to_i
 
 oldest_tweets_page.downto(0) do |page|
   tweets = api_call :user_timeline, count: MAX_TWEETS_PER_PAGE, page: page
-  tweets_to_delete += tweets.reject &method(:too_new_or_popular?)
+  tweets_to_delete += tweets.reject(&method(:too_new_or_popular?))
 end
 
 if @options[:csv_given]
@@ -103,7 +103,7 @@ if @options[:csv_given]
 
   csv_tweet_ids.each_slice(MAX_TWEETS_PER_REQUEST) do |tweet_ids|
     tweets = api_call :statuses, tweet_ids
-    tweets_to_delete += tweets.reject &method(:too_new_or_popular?)
+    tweets_to_delete += tweets.reject(&method(:too_new_or_popular?))
   end
 end
 
@@ -112,7 +112,7 @@ tweets_not_found = []
 tweets_to_delete.each_slice(MAX_TWEETS_PER_REQUEST) do |tweets|
   begin
     api_call :destroy_status, tweets
-  rescue Twitter::Error::NotFound => error
+  rescue Twitter::Error::NotFound
     tweets_not_found += tweets
   end
 end
@@ -120,6 +120,6 @@ end
 tweets_not_found.each do |tweet|
   begin
     api_call :destroy_status, tweet
-  rescue Twitter::Error::NotFound => error
+  rescue Twitter::Error::NotFound
   end
 end
