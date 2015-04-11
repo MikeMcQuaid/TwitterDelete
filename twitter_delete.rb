@@ -13,21 +13,22 @@ MAX_API_TWEETS = 3200
 MAX_TWEETS_PER_PAGE = 250
 MAX_TWEETS_PER_REQUEST = 100
 
+Dotenv.load
+
 @options = Trollop::options do
   opt :force, "Actually delete/unfavourite/unretweet tweets"
-  opt :user, "The Twitter username to purge", type: :string
+  opt :user, "The Twitter username to purge", type: :string, default: ENV["TWITTER_USER"]
   opt :csv, "Twitter archive tweets.csv file", type: :string
   opt :days, "Keep tweets under this many days old", default: 28
   opt :rts, "Keep tweet with this many retweets", default: 5
   opt :favs, "Keep tweets with this many favourites", default: 5
 end
 
-Trollop::die :user, "must be set" unless @options[:user_given]
+Trollop::die :user, "must be set" if @options[:user].empty?
 if @options[:csv_given] && !File.exist?(@options[:csv])
   Trollop::die :csv, "must be a file that exists"
 end
 
-Dotenv.load
 [ "TWITTER_CONSUMER_KEY", "TWITTER_CONSUMER_SECRET",
   "TWITTER_ACCESS_TOKEN", "TWITTER_ACCESS_TOKEN_SECRET"].each do |env|
   Trollop::die "#{env} environment variable must be set" unless ENV[env]
