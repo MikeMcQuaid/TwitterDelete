@@ -30,6 +30,8 @@ Now run TwitterDelete:
 ## Status
 Still a work-in-progress but works for deleting the relevant tweets. I may turn this into a web application.
 
+[![Build Status](https://travis-ci.org/mikemcquaid/TwitterDelete.svg?branch=master)](https://travis-ci.org/mikemcquaid/TwitterDelete)
+
 ## Contact
 [Mike McQuaid](mailto:mike@mikemcquaid.com)
 
