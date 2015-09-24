@@ -28,7 +28,7 @@ Now run TwitterDelete:
 ```
 
 ## Status
-Still a work-in-progress but works for deleting the relevant tweets. I may turn this into a web application.
+Works for deleting relevant tweets. I've deleted all my tweets and don't really use Twitter any more so am not actively working on this but will accept pull requests.
 
 [![Build Status](https://travis-ci.org/mikemcquaid/TwitterDelete.svg?branch=master)](https://travis-ci.org/mikemcquaid/TwitterDelete)
 
