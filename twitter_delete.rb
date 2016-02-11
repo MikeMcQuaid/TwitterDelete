@@ -90,23 +90,23 @@ oldest_favorites_page.downto(0) do |page|
 end
 
 if tweets_to_unfavourite.size > 0
-    exit unless HighLine.agree("==> This will unfavorite #{tweets_to_unfavourite.size} tweets. Do you want to proceed? [Yes/no]")
-    puts "==> Unfavoriting #{tweets_to_unfavourite.size} tweets"
-    tweets_to_unfavourite.each_slice(MAX_TWEETS_PER_REQUEST) do |tweets|
-      api_call :unfavorite, tweets
-    end
+  exit unless HighLine.agree("==> This will unfavorite #{tweets_to_unfavourite.size} tweets. Do you want to proceed? [Yes/no]")
+  puts "==> Unfavoriting #{tweets_to_unfavourite.size} tweets"
+  tweets_to_unfavourite.each_slice(MAX_TWEETS_PER_REQUEST) do |tweets|
+    api_call :unfavorite, tweets
+  end
 end
 
 puts "==> Checking timeline..."
 
 unless @options[:csvonly]
-    total_tweets = [user.statuses_count, MAX_API_TWEETS].min
-    oldest_tweets_page = (total_tweets / MAX_TWEETS_PER_PAGE).to_i
+  total_tweets = [user.statuses_count, MAX_API_TWEETS].min
+  oldest_tweets_page = (total_tweets / MAX_TWEETS_PER_PAGE).to_i
 
-    oldest_tweets_page.downto(0) do |page|
-      tweets = api_call :user_timeline, count: MAX_TWEETS_PER_PAGE, page: page
-      tweets_to_delete += tweets.reject(&method(:too_new_or_popular?))
-    end
+  oldest_tweets_page.downto(0) do |page|
+    tweets = api_call :user_timeline, count: MAX_TWEETS_PER_PAGE, page: page
+    tweets_to_delete += tweets.reject(&method(:too_new_or_popular?))
+  end
 end
 
 if @options[:csv_given]
