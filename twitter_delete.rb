@@ -8,6 +8,7 @@ require "twitter"
 require "trollop"
 require "csv"
 require "dotenv"
+require 'highline/import'
 
 MAX_API_TWEETS = 3200
 MAX_TWEETS_PER_PAGE = 250
@@ -86,12 +87,15 @@ oldest_favorites_page.downto(0) do |page|
   tweets_to_unfavourite += tweets.reject(&method(:too_new?))
 end
 
-puts "==> Unfavoriting #{tweets_to_unfavourite.size} tweets"
-tweets_to_unfavourite.each_slice(MAX_TWEETS_PER_REQUEST) do |tweets|
-  api_call :unfavorite, tweets
+if tweets_to_unfavourite.size > 0
+    exit unless HighLine.agree("==> This will unfavorite #{tweets_to_unfavourite.size} tweets. Do you want to proceed? [Yes/no]")
+    puts "==> Unfavoriting #{tweets_to_unfavourite.size} tweets"
+    tweets_to_unfavourite.each_slice(MAX_TWEETS_PER_REQUEST) do |tweets|
+      api_call :unfavorite, tweets
+    end
 end
 
-puts "Checking timeline..."
+puts "==> Checking timeline..."
 total_tweets = [user.statuses_count, MAX_API_TWEETS].min
 oldest_tweets_page = (total_tweets / MAX_TWEETS_PER_PAGE).to_i
 
@@ -115,6 +119,7 @@ if @options[:csv_given]
   end
 end
 
+exit unless HighLine.agree("==> This will delete #{tweets_to_delete.size} tweets. Do you want to proceed? [Yes/no]")
 puts "==> Deleting #{tweets_to_delete.size} tweets"
 tweets_not_found = []
 tweets_to_delete.each_slice(MAX_TWEETS_PER_REQUEST) do |tweets|
