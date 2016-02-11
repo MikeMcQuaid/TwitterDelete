@@ -8,6 +8,7 @@ require "twitter"
 require "trollop"
 require "csv"
 require "dotenv"
+require 'highline/import'
 
 MAX_API_TWEETS = 3200
 MAX_TWEETS_PER_PAGE = 250
@@ -19,12 +20,14 @@ Dotenv.load
   opt :force, "Actually delete/unfavourite/unretweet tweets"
   opt :user, "The Twitter username to purge", type: :string, default: ENV["TWITTER_USER"]
   opt :csv, "Twitter archive tweets.csv file", type: :string
+  opt :csvonly, "Will only delete tweets contained in the given csv file", type: :boolean
   opt :days, "Keep tweets under this many days old", default: 28
   opt :rts, "Keep tweet with this many retweets", default: 5
   opt :favs, "Keep tweets with this many favourites", default: 5
 end
 
-Trollop::die :user, "must be set" if @options[:user].empty?
+Trollop::die :user, "must be set" if @options[:user].nil?
+Trollop::die :csv, "must be given if you enable 'csvonly'" if @options[:csvonly] && @options[:csv].nil?
 if @options[:csv_given] && !File.exist?(@options[:csv])
   Trollop::die :csv, "must be a file that exists"
 end
@@ -86,18 +89,24 @@ oldest_favorites_page.downto(0) do |page|
   tweets_to_unfavourite += tweets.reject(&method(:too_new?))
 end
 
-puts "==> Unfavoriting #{tweets_to_unfavourite.size} tweets"
-tweets_to_unfavourite.each_slice(MAX_TWEETS_PER_REQUEST) do |tweets|
-  api_call :unfavorite, tweets
+if tweets_to_unfavourite.size > 0
+  exit unless HighLine.agree("==> This will unfavorite #{tweets_to_unfavourite.size} tweets. Do you want to proceed? [Yes/no]")
+  puts "==> Unfavoriting #{tweets_to_unfavourite.size} tweets"
+  tweets_to_unfavourite.each_slice(MAX_TWEETS_PER_REQUEST) do |tweets|
+    api_call :unfavorite, tweets
+  end
 end
 
-puts "Checking timeline..."
-total_tweets = [user.statuses_count, MAX_API_TWEETS].min
-oldest_tweets_page = (total_tweets / MAX_TWEETS_PER_PAGE).to_i
+puts "==> Checking timeline..."
 
-oldest_tweets_page.downto(0) do |page|
-  tweets = api_call :user_timeline, count: MAX_TWEETS_PER_PAGE, page: page
-  tweets_to_delete += tweets.reject(&method(:too_new_or_popular?))
+unless @options[:csvonly]
+  total_tweets = [user.statuses_count, MAX_API_TWEETS].min
+  oldest_tweets_page = (total_tweets / MAX_TWEETS_PER_PAGE).to_i
+
+  oldest_tweets_page.downto(0) do |page|
+    tweets = api_call :user_timeline, count: MAX_TWEETS_PER_PAGE, page: page
+    tweets_to_delete += tweets.reject(&method(:too_new_or_popular?))
+  end
 end
 
 if @options[:csv_given]
@@ -115,6 +124,7 @@ if @options[:csv_given]
   end
 end
 
+exit unless HighLine.agree("==> This will delete #{tweets_to_delete.size} tweets. Do you want to proceed? [Yes/no]")
 puts "==> Deleting #{tweets_to_delete.size} tweets"
 tweets_not_found = []
 tweets_to_delete.each_slice(MAX_TWEETS_PER_REQUEST) do |tweets|

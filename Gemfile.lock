@@ -7,6 +7,7 @@ GEM
     equalizer (0.0.9)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
+    highline (1.7.8)
     http (0.6.3)
       http_parser.rb (~> 0.6.0)
     http_parser.rb (0.6.0)
@@ -35,5 +36,9 @@ PLATFORMS
 
 DEPENDENCIES
   dotenv
+  highline
   trollop
   twitter
+
+BUNDLED WITH
+   1.11.2
