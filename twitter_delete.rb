@@ -24,7 +24,7 @@ Dotenv.load
   opt :favs, "Keep tweets with this many favourites", default: 5
 end
 
-Trollop::die :user, "must be set" if @options[:user].empty?
+Trollop::die :user, "must be set" if @options[:user].to_s.empty?
 if @options[:csv_given] && !File.exist?(@options[:csv])
   Trollop::die :csv, "must be a file that exists"
 end
