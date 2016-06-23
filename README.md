@@ -30,7 +30,7 @@ Now run TwitterDelete:
 ## Status
 Works for deleting relevant tweets. I've deleted all my tweets and don't really use Twitter any more so am not actively working on this but will accept pull requests.
 
-[![Build Status](https://travis-ci.org/mikemcquaid/TwitterDelete.svg?branch=master)](https://travis-ci.org/mikemcquaid/TwitterDelete)
+[![Build Status](https://travis-ci.org/MikeMcQuaid/TwitterDelete.svg?branch=master)](https://travis-ci.org/MikeMcQuaid/TwitterDelete)
 
 ## Contact
 [Mike McQuaid](mailto:mike@mikemcquaid.com)
