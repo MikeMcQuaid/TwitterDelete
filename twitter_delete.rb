@@ -16,7 +16,7 @@ MAX_TWEETS_PER_REQUEST = 100
 Dotenv.load
 
 @options = Trollop::options do
-  opt :force, "Actually delete/unfavourite/unretweet tweets"
+  opt :force, "Actually delete/unfavourite/unretweet tweets", type: :boolean, default: false
   opt :user, "The Twitter username to purge", type: :string, default: ENV["TWITTER_USER"]
   opt :csv, "Twitter archive tweets.csv file", type: :string
   opt :days, "Keep tweets under this many days old", default: 28
@@ -113,6 +113,11 @@ if @options[:csv_given]
     tweets = api_call :statuses, tweet_ids
     tweets_to_delete += tweets.reject(&method(:too_new_or_popular?))
   end
+end
+
+if !@options[:force]
+  puts "==> To delete #{tweets_to_delete.size} tweets, re-run the command with --force"
+  exit 0
 end
 
 puts "==> Deleting #{tweets_to_delete.size} tweets"
