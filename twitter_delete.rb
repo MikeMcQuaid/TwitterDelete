@@ -86,11 +86,6 @@ oldest_favorites_page.downto(0) do |page|
   tweets_to_unfavourite += tweets.reject(&method(:too_new?))
 end
 
-puts "==> Unfavoriting #{tweets_to_unfavourite.size} tweets"
-tweets_to_unfavourite.each_slice(MAX_TWEETS_PER_REQUEST) do |tweets|
-  api_call :unfavorite, tweets
-end
-
 puts "Checking timeline..."
 total_tweets = [user.statuses_count, MAX_API_TWEETS].min
 oldest_tweets_page = (total_tweets / MAX_TWEETS_PER_PAGE).to_i
@@ -116,9 +111,15 @@ if @options[:csv_given]
 end
 
 if !@options[:force]
-  puts "==> To delete #{tweets_to_delete.size} tweets, re-run the command with --force"
+  puts "==> To unfavorite #{tweets_to_unfavourite.size} and delete #{tweets_to_delete.size} tweets, re-run the command with --force"
   exit 0
 end
+
+puts "==> Unfavoriting #{tweets_to_unfavourite.size} tweets"
+tweets_to_unfavourite.each_slice(MAX_TWEETS_PER_REQUEST) do |tweets|
+  api_call :unfavorite, tweets
+end
+
 
 puts "==> Deleting #{tweets_to_delete.size} tweets"
 tweets_not_found = []
