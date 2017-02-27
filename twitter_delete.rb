@@ -20,7 +20,7 @@ Dotenv.load
   opt :user, "The Twitter username to purge", type: :string, default: ENV["TWITTER_USER"]
   opt :csv, "Twitter archive tweets.csv file", type: :string
   opt :days, "Keep tweets under this many days old", default: 28
-  opt :olds, "Keep tweets more than this many days old", default: 1460
+  opt :olds, "Keep tweets more than this many days old", default: 9999
   opt :rts, "Keep tweet with this many retweets", default: 5
   opt :favs, "Keep tweets with this many favourites", default: 5
 end
@@ -46,7 +46,7 @@ end
 @newest_tweet_time_to_keep = Time.now - @options[:olds]*24*60*60
 
 def too_new? tweet
-  tweet.created_at > @oldest_tweet_time_to_keep or tweet.created_at < @newest_tweet_time_to_keep
+  tweet.created_at > @oldest_tweet_time_to_keep || tweet.created_at < @newest_tweet_time_to_keep
 end
 
 def too_new_or_popular? tweet
