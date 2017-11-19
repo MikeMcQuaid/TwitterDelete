@@ -6,7 +6,7 @@ GEM
     buftok (0.2.0)
     domain_name (0.5.20170223)
       unf (>= 0.0.5, < 1.0.0)
-    dotenv (2.2.0)
+    dotenv (2.2.1)
     equalizer (0.0.11)
     faraday (0.11.0)
       multipart-post (>= 1.2, < 3)
