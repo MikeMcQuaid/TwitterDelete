@@ -10,7 +10,7 @@ require "csv"
 require "dotenv"
 
 MAX_API_TWEETS = 3200
-MAX_TWEETS_PER_PAGE = 250
+MAX_TWEETS_PER_PAGE = 250.0
 MAX_TWEETS_PER_REQUEST = 100
 
 Dotenv.load
@@ -81,7 +81,7 @@ tweets_to_delete = []
 
 puts "==> Checking favourites..."
 total_favorites = [user.favorites_count, MAX_API_TWEETS].min
-oldest_favorites_page = (total_favorites / MAX_TWEETS_PER_PAGE).to_i
+oldest_favorites_page = (total_favorites / MAX_TWEETS_PER_PAGE).ceil
 
 oldest_favorites_page.downto(0) do |page|
   tweets = api_call :favorites, count: MAX_TWEETS_PER_PAGE, page: page
@@ -90,7 +90,7 @@ end
 
 puts "Checking timeline..."
 total_tweets = [user.statuses_count, MAX_API_TWEETS].min
-oldest_tweets_page = (total_tweets / MAX_TWEETS_PER_PAGE).to_i
+oldest_tweets_page = (total_tweets / MAX_TWEETS_PER_PAGE).ceil
 
 oldest_tweets_page.downto(0) do |page|
   tweets = api_call :user_timeline, count: MAX_TWEETS_PER_PAGE, page: page
