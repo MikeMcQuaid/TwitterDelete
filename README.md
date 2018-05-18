@@ -1,9 +1,10 @@
 # TwitterDelete
-TwitterDelete is a small application to delete your old, unpopular tweets.
+TwitterDelete is a small application to delete your old, unpopular tweets, likes and direct messages.
 
 ## Features
-- Delete, unfavorite and unretweet tweets
-- Keep tweets based on age, retweet or favourite count
+- Delete, unlike and unretweet tweets
+- Delete direct messages
+- Keep tweets/messages based on age and tweeks based on retweet or favourite count
 - Delete tweets no longer exposed by Twitter API from a downloaded Twitter archive file
 
 ## Usage
@@ -28,7 +29,7 @@ Now run TwitterDelete:
 ```
 
 ## Status
-Works for deleting relevant tweets. I've deleted all my tweets and don't really use Twitter any more so am not actively working on this but will accept pull requests.
+Works for deleting relevant tweet, likes and messages. I've deleted my old tweets and am not actively working on this but I will accept pull requests.
 
 [![Build Status](https://travis-ci.org/MikeMcQuaid/TwitterDelete.svg?branch=master)](https://travis-ci.org/MikeMcQuaid/TwitterDelete)
 
