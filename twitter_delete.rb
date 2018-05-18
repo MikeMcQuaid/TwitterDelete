@@ -102,12 +102,14 @@ oldest_tweets_page.downto(1) do |page|
   tweets_to_delete += tweets.reject(&method(:too_new_or_popular?))
 end
 
-puts "Checking messages..."
-oldest_messages_page = (MAX_API_TWEETS_MESSAGES / MAX_TWEETS_MESSAGES_PER_PAGE).ceil
-oldest_messages_page.downto(1) do |page|
-  messages = api_call :direct_messages, count: MAX_TWEETS_MESSAGES_PER_PAGE, page: page
-  messages_to_delete += messages.reject(&method(:too_new_or_popular?))
+def check_messages
+  puts "==> Checking messages..."
+  messages = api_call :direct_messages_sent, count: MAX_TWEETS_MESSAGES_PER_PAGE
+  messages += api_call :direct_messages_received, count: MAX_TWEETS_MESSAGES_PER_PAGE
+  messages.reject(&method(:too_new_or_popular?))
 end
+
+messages_to_delete += check_messages
 
 if @options[:csv_given]
   puts "==> Checking archive CSV..."
@@ -158,12 +160,14 @@ end
 
 puts "==> Deleting #{messages_to_delete.size} messages"
 messages_not_found = []
-messages_to_delete.each_slice(MAX_TWEETS_MESSAGES_PER_REQUEST) do |messages|
+until messages_to_delete.empty?
+  messages = messages_to_delete.slice!(0, MAX_TWEETS_MESSAGES_PER_REQUEST)
   begin
     api_call :destroy_direct_message, messages
   rescue Twitter::Error::NotFound
     messages_not_found += messages
   end
+  messages_to_delete += check_messages
 end
 
 messages_not_found.each do |message|
