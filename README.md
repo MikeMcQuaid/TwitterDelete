@@ -54,7 +54,6 @@ When you need to run the script and actually delete your tweets, rather
 than a dry run which is the default, you can add the `--force` flag to 
 the `docker run` invocation.
 
-
 ## Status
 Works for deleting relevant tweet, likes and messages. I've deleted my old tweets and am not actively working on this but I will accept pull requests.
 
