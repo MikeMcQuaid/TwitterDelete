@@ -28,6 +28,33 @@ Now run TwitterDelete:
 ./twitter_delete.rb --user TwitterUsername
 ```
 
+Alternatively, you can run TwitterDelete via [Docker](https://www.docker.com/),
+which you may wish to do if you do not have [Bundler](https://bundler.io/)
+or [Ruby](https://www.ruby-lang.org/) installed. Run TwitterDelete using docker,
+do the following:
+
+```bash
+docker build -t twitter-delete $PATH_TO_THIS_REPO
+docker run --env-file $PATH_TO_ENV_FILE twitter-delete
+```
+
+where `$PATH_TO_THIS_REPO` is the location on your filesystem where you
+checkout out this repo and `$PATH_TO_ENV_FILE` is the path to a "dot env"
+file formatted something like the following:
+
+```
+TWITTER_USER=yourtwitterhandle
+TWITTER_CONSUMER_KEY=2Hzv0yPsQnPEdNL5RryGlbnCY
+TWITTER_CONSUMER_SECRET=8uzRKNl05dyxaSy18jZnibK4mp4vQ2SayMpG2Q38P7SjP1VxWD
+TWITTER_ACCESS_TOKEN=148111111-8RFYuBp4fvvlsw6WcO5CQ5cV0cuuxNZEjjlTo7WY
+TWITTER_ACCESS_TOKEN_SECRET=kap8Lc5bKl1hXtPpl6JSWclNscDH18o7FghPn8VtLJrph
+```
+
+When you need to run the script and actually delete your tweets, rather
+than a dry run which is the default, you can add the `--force` flag to 
+the `docker run` invocation.
+
+
 ## Status
 Works for deleting relevant tweet, likes and messages. I've deleted my old tweets and am not actively working on this but I will accept pull requests.
 
