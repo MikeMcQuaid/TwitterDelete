@@ -4,7 +4,7 @@ GEM
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
     buftok (0.2.0)
-    domain_name (0.5.20170404)
+    domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.5.0)
     equalizer (0.0.11)
@@ -38,7 +38,7 @@ GEM
       simple_oauth (~> 0.3.0)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.4)
+    unf_ext (0.0.7.5)
 
 PLATFORMS
   ruby
