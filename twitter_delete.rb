@@ -75,8 +75,6 @@ rescue Twitter::Error::TooManyRequests => error
   puts "Rate limit exceeded; waiting until #{error.rate_limit.reset_at}"
   sleep error.rate_limit.reset_in
   retry
-rescue Twitter::Error::Forbidden => error
-  puts error.to_s
 end
 
 user = api_call :user, @options[:username]
