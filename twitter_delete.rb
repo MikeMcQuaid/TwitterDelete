@@ -6,7 +6,7 @@ require "bundler/setup"
 
 require "twitter"
 require "trollop"
-require "csv"
+require "json"
 require "dotenv"
 
 MAX_API_TWEETS = 3200
@@ -18,7 +18,7 @@ Dotenv.load
 @options = Trollop::options do
   opt :force, "Actually delete/unfavourite/unretweet tweets", type: :boolean, default: false
   opt :user, "The Twitter username to purge", type: :string, default: ENV["TWITTER_USER"]
-  opt :csv, "Twitter archive tweets.csv file", type: :string
+  opt :archive, "Twitter archive tweet.js file", type: :string
   opt :days, "Keep tweets under this many days old", default: 28
   opt :olds, "Keep tweets more than this many days old", default: 9999
   opt :rts, "Keep tweet with this many retweets", default: 5
@@ -26,8 +26,8 @@ Dotenv.load
 end
 
 Trollop::die :user, "must be set" if @options[:user].to_s.empty?
-if @options[:csv_given] && !File.exist?(@options[:csv])
-  Trollop::die :csv, "must be a file that exists"
+if @options[:archive_given] && !File.exist?(@options[:archive])
+  Trollop::die :archive, "must be a file that exists"
 end
 
 [ "TWITTER_CONSUMER_KEY", "TWITTER_CONSUMER_SECRET",
@@ -73,6 +73,8 @@ rescue Twitter::Error::TooManyRequests => error
   puts "Rate limit exceeded; waiting until #{error.rate_limit.reset_at}"
   sleep error.rate_limit.reset_in
   retry
+rescue Twitter::Error::Forbidden => error
+  puts error.to_s
 end
 
 user = api_call :user, @options[:username]
@@ -97,16 +99,19 @@ oldest_tweets_page.downto(0) do |page|
   tweets_to_delete += tweets.reject(&method(:too_new_or_popular?))
 end
 
-if @options[:csv_given]
-  puts "==> Checking archive CSV..."
-  csv_tweet_ids = []
-  CSV.foreach(@options[:csv]) do |row|
-    tweet_id = row.first
-    next if tweet_id == "tweet_id"
-    csv_tweet_ids << tweet_id
+if @options[:archive_given]
+  puts "==> Checking archive JS..."
+  archive_tweet_ids = []
+
+  # tweet.js is not valid JSON...
+  file_contents = File.read(@options[:archive])
+  file_contents.sub! 'window.YTD.tweet.part0 = ', ''
+
+  JSON.parse(file_contents).each do |tweet|
+    archive_tweet_ids << tweet["id_str"]
   end
 
-  csv_tweet_ids.each_slice(MAX_TWEETS_PER_REQUEST) do |tweet_ids|
+  archive_tweet_ids.each_slice(MAX_TWEETS_PER_REQUEST) do |tweet_ids|
     tweets = api_call :statuses, tweet_ids
     tweets_to_delete += tweets.reject(&method(:too_new_or_popular?))
   end
