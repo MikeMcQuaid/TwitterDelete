@@ -4,19 +4,16 @@ ENV["BUNDLE_GEMFILE"] ||= File.expand_path "#{__FILE__}/../Gemfile"
 require "rubygems"
 require "bundler/setup"
 
-require "twitter"
-require "trollop"
-require "json"
-require "dotenv"
-
 MAX_API_TWEETS = 3200
 MAX_TWEETS_PER_PAGE = 200.0
 MAX_TWEETS_PER_REQUEST = 100
 MAX_LIKES_PER_PAGE = 100.0
 
+require "dotenv"
 Dotenv.load
 
-@options = Trollop.options do
+require "optimist"
+@options = Optimist.options do
   opt :force, "Actually delete/unlike/unretweet tweets", type: :boolean, default: false
   opt :user, "The Twitter username to purge", type: :string, default: ENV["TWITTER_USER"]
   opt :archive, "Twitter archive tweet.js file", type: :string
@@ -26,15 +23,17 @@ Dotenv.load
   opt :favs, "Keep tweets with this many likes", default: 5
 end
 
-Trollop::die :user, "must be set" if @options[:user].to_s.empty?
-if @options[:archive_given] && !File.exist?(@options[:archive])
-  Trollop::die :archive, "must be a file that exists"
+Optimist.die :user, "must be set" if @options[:user].to_s.empty?
+if @options[:csv_given] && !File.exist?(@options[:csv])
+  Optimist.die :csv, "must be a file that exists"
 end
 
 %w[TWITTER_CONSUMER_KEY TWITTER_CONSUMER_SECRET
    TWITTER_ACCESS_TOKEN TWITTER_ACCESS_TOKEN_SECRET].each do |env|
-  Trollop.die "#{env} environment variable must be set" unless ENV[env]
+  Optimist.die "#{env} environment variable must be set" unless ENV[env]
 end
+
+require "twitter"
 
 @client = Twitter::REST::Client.new do |config|
   config.consumer_key = ENV["TWITTER_CONSUMER_KEY"]
