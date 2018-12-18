@@ -21,10 +21,10 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     multipart-post (2.0.0)
     naught (1.1.0)
+    optimist (3.0.0)
     public_suffix (3.0.3)
     simple_oauth (0.3.1)
     thread_safe (0.3.6)
-    trollop (2.9.9)
     twitter (6.2.0)
       addressable (~> 2.3)
       buftok (~> 0.2.0)
@@ -45,8 +45,8 @@ PLATFORMS
 
 DEPENDENCIES
   dotenv
-  trollop
+  optimist
   twitter
 
 BUNDLED WITH
-   1.14.3
+   1.17.2
