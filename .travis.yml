@@ -1,2 +1,5 @@
 language: ruby
+before_install:
+  - gem update --system
+  - gem install bundler
 script: bundle exec ruby -c *.rb
