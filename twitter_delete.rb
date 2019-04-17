@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 require "pathname"
-ENV["BUNDLE_GEMFILE"] ||= File.expand_path "#{__FILE__}/../Gemfile"
 require "rubygems"
-require "bundler/setup"
 
 MAX_API_TWEETS = 3200
 MAX_TWEETS_PER_PAGE = 200.0
