@@ -30,8 +30,6 @@ Now run TwitterDelete:
 ## Status
 Works for deleting relevant tweet and likes. I've deleted my old tweets and am not actively working on this but I will accept pull requests.
 
-[![Build Status](https://travis-ci.org/MikeMcQuaid/TwitterDelete.svg?branch=master)](https://travis-ci.org/MikeMcQuaid/TwitterDelete)
-
 ## Contact
 [Mike McQuaid](mailto:mike@mikemcquaid.com)
 
