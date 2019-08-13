@@ -1,0 +1,21 @@
+name: GitHub Actions CI
+on: [push]
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Git repository
+      uses: actions/checkout@master
+
+    - name: Set up Ruby
+      uses: actions/setup-ruby@v1
+      with:
+        version: '>=2.3'
+
+    - name: Install RubyGems
+      run: |
+        gem install bundler
+        bundle install --jobs 4 --retry 3
+
+    - name: Validate Ruby syntax
+      run: bundle exec ruby -c *.rb
