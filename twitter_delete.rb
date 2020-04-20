@@ -1,16 +1,17 @@
 #!/usr/bin/env ruby
 require "pathname"
 require "rubygems"
+require "dotenv"
+require "optimist"
+require "twitter"
 
 MAX_API_TWEETS = 3200
 MAX_TWEETS_PER_PAGE = 200.0
 MAX_TWEETS_PER_REQUEST = 100
 MAX_LIKES_PER_PAGE = 100.0
 
-require "dotenv"
 Dotenv.load
 
-require "optimist"
 @options = Optimist.options do
   opt :force, "Actually delete/unlike/unretweet tweets", type: :boolean, default: false
   opt :user, "The Twitter username to purge", type: :string, default: ENV["TWITTER_USER"]
@@ -19,19 +20,18 @@ require "optimist"
   opt :olds, "Keep tweets/likes more than this many days old", default: 9999
   opt :rts, "Keep tweet with this many retweets", default: 5
   opt :favs, "Keep tweets with this many likes", default: 5
+  opt :test, "Load TwitterDelete and immediately exit", type: :boolean, default: false
 end
 
+exit if @options[:test]
+
 Optimist.die :user, "must be set" if @options[:user].to_s.empty?
-if @options[:csv_given] && !File.exist?(@options[:csv])
-  Optimist.die :csv, "must be a file that exists"
-end
+Optimist.die :csv, "must be a file that exists" if @options[:csv_given] && !File.exist?(@options[:csv])
 
 %w[TWITTER_CONSUMER_KEY TWITTER_CONSUMER_SECRET
    TWITTER_ACCESS_TOKEN TWITTER_ACCESS_TOKEN_SECRET].each do |env|
   Optimist.die "#{env} environment variable must be set" unless ENV[env]
 end
-
-require "twitter"
 
 @client = Twitter::REST::Client.new do |config|
   config.consumer_key = ENV["TWITTER_CONSUMER_KEY"]
@@ -68,9 +68,9 @@ end
 
 def api_call(method, *args)
   @client.send method, *args
-rescue Twitter::Error::TooManyRequests => error
-  puts "Rate limit exceeded; waiting until #{error.rate_limit.reset_at}"
-  sleep error.rate_limit.reset_in
+rescue Twitter::Error::TooManyRequests => e
+  puts "Rate limit exceeded; waiting until #{e.rate_limit.reset_at}"
+  sleep e.rate_limit.reset_in
   retry
 end
 
@@ -102,7 +102,7 @@ if @options[:archive_given]
 
   # tweet.js is not valid JSON...
   file_contents = File.read(@options[:archive])
-  file_contents.sub! 'window.YTD.tweet.part0 = ', ''
+  file_contents.sub! "window.YTD.tweet.part0 = ", ""
 
   JSON.parse(file_contents).each do |tweet|
     archive_tweet_ids << tweet["id_str"]
