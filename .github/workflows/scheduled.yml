@@ -1,0 +1,34 @@
+name: Scheduled
+on:
+  pull_request:
+    paths:
+      - .github/workflows/scheduled.yml
+  schedule:
+    # Once every day
+    - cron:  '0 0 * * *'
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Git repository
+      uses: actions/checkout@master
+
+    - name: Set up Ruby
+      uses: actions/setup-ruby@master
+      with:
+        ruby-version: '>=2.6'
+
+    - name: Install RubyGems
+      run: |
+        gem install bundler
+        bundle install --jobs 4 --retry 3
+
+    - name: Run TwitterDelete
+      run: bundle exec twitter_delete.rb --force
+      env:
+        TWITTER_USER: ${{ secrets.TWITTER_USER }}
+        TWITTER_DAYS: ${{ secrets.TWITTER_DAYS }}
+        TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
+        TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
+        TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+        TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}

@@ -11,9 +11,9 @@ jobs:
       uses: actions/checkout@master
 
     - name: Set up Ruby
-      uses: actions/setup-ruby@v1
+      uses: actions/setup-ruby@master
       with:
-        ruby-version: '>=2.3'
+        ruby-version: '>=2.6'
 
     - name: Install RubyGems
       run: |
