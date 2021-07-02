@@ -22,7 +22,7 @@ GEM
     http-form_data (2.3.0)
     http-parser (1.2.3)
       ffi-compiler (>= 1.0, < 2.0)
-    http_parser.rb (0.6.1)
+    http_parser.rb (0.6.0)
     memoizable (0.4.2)
       thread_safe (~> 0.3, >= 0.3.1)
     multipart-post (2.1.1)
