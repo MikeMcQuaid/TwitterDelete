@@ -1,24 +1,21 @@
 name: GitHub Actions CI
 on:
   push:
-    branches: master
-  pull_request: []
+    branches:
+      - master
+  pull_request:
 jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-    - name: Set up Git repository
-      uses: actions/checkout@master
+      - name: Set up Git repository
+        uses: actions/checkout@master
 
-    - name: Set up Ruby
-      uses: actions/setup-ruby@master
-      with:
-        ruby-version: '>=2.6'
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@master
+        with:
+          ruby-version: "2.6"
+          bundler-cache: true
 
-    - name: Install RubyGems
-      run: |
-        gem install bundler
-        bundle install --jobs 4 --retry 3
-
-    - name: Test TwitterDelete initialisation
-      run: bundle exec twitter_delete.rb --test
+      - name: Test TwitterDelete initialisation
+        run: bundle exec twitter_delete.rb --test
