@@ -20,7 +20,7 @@ Dotenv.load
   opt :olds, "Keep tweets/likes more than this many days old", default: 9999
   opt :rts, "Keep tweet with this many retweets", default: 5
   opt :favs, "Keep tweets with this many likes", default: 5
-  opt :part, "Keep tweets with this many likes", default: 0
+  opt :part, "Refer to window.YTD.tweet.part[x] in tweet.js file", default: 0
   opt :test, "Load TwitterDelete and immediately exit", type: :boolean, default: false
 end
 
@@ -83,7 +83,7 @@ puts "==> Checking likes..."
 total_likes = [user.favorites_count, MAX_API_TWEETS].min
 oldest_likes_page = (total_likes / MAX_LIKES_PER_PAGE).ceil
 
-oldest_likes_page.downto(1) do |page|  
+oldest_likes_page.downto(1) do |page|
   tweets = api_call :favorites, count: MAX_LIKES_PER_PAGE, page: page
   tweets_to_unlike += tweets.reject(&method(:too_new?))
 end
@@ -97,8 +97,6 @@ oldest_tweets_page.downto(1) do |page|
   tweets = api_call :user_timeline, count: MAX_TWEETS_PER_PAGE, page: page
   tweets_to_delete += tweets.reject(&method(:too_new_or_popular?))
 end
-
-puts "==> Checking timeline to API Completed"
 
 if @options[:archive_given]
   puts "==> Checking archive JS part = ".concat(@options[:part].to_s)
