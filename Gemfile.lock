@@ -25,7 +25,7 @@ GEM
     http_parser.rb (0.6.0)
     memoizable (0.4.2)
       thread_safe (~> 0.3, >= 0.3.1)
-    multipart-post (2.2.2)
+    multipart-post (2.2.3)
     naught (1.1.0)
     optimist (3.0.1)
     public_suffix (4.0.7)
