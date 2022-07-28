@@ -6,7 +6,7 @@ GEM
     buftok (0.2.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    dotenv (2.7.6)
+    dotenv (2.8.1)
     equalizer (0.0.11)
     ffi (1.15.5)
     ffi-compiler (1.0.1)
