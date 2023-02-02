@@ -1,6 +1,19 @@
-# TwitterDelete
+# TwitterDelete 💀 (archived)
 
-TwitterDelete is a small application to delete your old, unpopular tweets and likes.
+TwitterDelete was a small application to delete your old, unpopular tweets and likes.
+
+> Starting February 9, we will no longer support free access to the Twitter API, both v2 and v1.1. A paid basic tier will be available instead
+
+<https://twitter.com/TwitterDev/status/1621026986784337922>
+
+I have zero interest maintaining anything using the Twitter API given this.
+
+If you're still using Twitter: get yourself to Mastodon which:
+
+- has TwitterDelete behaviour already built-in as a feature
+- is nice like Twitter was 10 years ago
+
+Come on, [follow me on Mastodon](https://mastodon.mikemcquaid.com/@mike), it's lovely over here.
 
 ## Features
 
